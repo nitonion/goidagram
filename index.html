@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Goidagram — На связи!</title>
+    <style>
+        :root {
+            --primary-red: #8b0000;
+            --gold: #ffd700;
+            --dark-bg: #1a1a1a;
+            --text-light: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        header {
+            background-color: var(--primary-red);
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        h1 { margin: 0; color: var(--gold); letter-spacing: 2px; }
+
+        #chat-container {
+            flex: 1;
+            width: 90%;
+            max-width: 600px;
+            background: #252525;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-y: auto;
+            border: 1px solid #444;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #333;
+            border-left: 4px solid var(--gold);
+        }
+
+        .input-area {
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 5px;
+            border: none;
+            background: #444;
+            color: white;
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: var(--primary-red);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--gold);
+            color: var(--primary-red);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>GOIDAGRAM</h1>
+</header>
+
+<div id="chat-container">
+    <div class="message">Система: Добро пожаловать в Goidagram! Соединение устанавливается...</div>
+</div>
+
+<div class="input-area">
+    <input type="text" id="messageInput" placeholder="Введите ваше послание...">
+    <button onclick="sendMessage()">ГОЙДА!</button>
+</div>
+
+<script>
+    // Генерируем случайный ID для теста
+    const clientId = Math.floor(Math.random() * 1000);
+    const ws = new WebSocket(`ws://localhost:8000/ws/${clientId}`);
+
+    ws.onmessage = function(event) {
+        const chat = document.getElementById('chat-container');
+        const message = document.createElement('div');
+        message.className = 'message';
+        message.textContent = event.data;
+        chat.appendChild(message);
+        chat.scrollTop = chat.scrollHeight; // Автопрокрутка вниз
+    };
+
+    function sendMessage() {
+        const input = document.getElementById('messageInput');
+        if (input.value) {
+            ws.send(input.value);
+            input.value = '';
+        }
+    }
+
+    // Отправка по нажатию Enter
+    document.getElementById('messageInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+
+</body>
+</html>
