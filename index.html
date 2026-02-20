@@ -105,7 +105,7 @@
 <script>
     // Генерируем случайный ID для теста
     const clientId = Math.floor(Math.random() * 1000);
-    const ws = new WebSocket('wss://goidagram.onrender.com/ws/' + clientId);
+    const ws = new WebSocket('wss://goidagram-l85h.onrender.com' + clientId);
 
     ws.onmessage = function(event) {
         const chat = document.getElementById('chat-container');
@@ -135,3 +135,4 @@
 </body>
 
 </html>
+
